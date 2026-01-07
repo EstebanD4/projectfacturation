@@ -1,4 +1,7 @@
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.Vector;
+import database.connexion;
 
 public class Main
 {
@@ -53,6 +56,28 @@ public class Main
             System.out.println("Date : " + factureVec.get(i).getDate());
             System.out.println("Prix HT: " + factureVec.get(i).getPrixHT());
             System.out.println("Prix TTC: " + factureVec.get(i).getPrixTTC());
+        }
+
+        // ***** [CONNEXION DB] *****
+        try
+        {
+            ResultSet result = null;
+            Connection cn = connexion.getInstance();
+            System.out.println("Connexion à la base de données réussie !");
+            result = cn.createStatement().executeQuery("SELECT * FROM `client`");
+
+            while(result.next())
+            {
+                System.out.println("Nom : " + result.getString("nom"));
+                System.out.println("Prenom : " + result.getString("prenom"));
+                System.out.println("Email : " + result.getString("email"));
+                System.out.println("Tel : " + result.getString("telephone"));
+            }
+            cn.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 }
