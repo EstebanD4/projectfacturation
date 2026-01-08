@@ -1,7 +1,6 @@
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.util.Vector;
-import database.connexion;
+import database.Connexion;
+import database.Requete;
 
 public class Main
 {
@@ -26,6 +25,12 @@ public class Main
         Vector<Facture> factureVec = new Vector();
         factureVec.add(facture1);
         factureVec.add(facture2);
+
+        // ***** [CONNEXION] *****
+        Connexion connect = new Connexion();
+
+        // ***** [REQUETE] *****
+        Requete req = new Requete();
 
         System.out.println("Bienvenue sur la page client de notre application!");
         System.out.println("Information Client:");
@@ -58,26 +63,48 @@ public class Main
             System.out.println("Prix TTC: " + factureVec.get(i).getPrixTTC());
         }
 
-        // ***** [CONNEXION DB] *****
-        try
-        {
-            ResultSet result = null;
-            Connection cn = connexion.getInstance();
-            System.out.println("Connexion à la base de données réussie !");
-            result = cn.createStatement().executeQuery("SELECT * FROM `client`");
 
-            while(result.next())
-            {
-                System.out.println("Nom : " + result.getString("nom"));
-                System.out.println("Prenom : " + result.getString("prenom"));
-                System.out.println("Email : " + result.getString("email"));
-                System.out.println("Tel : " + result.getString("telephone"));
-            }
-            cn.close();
-        }
-        catch (Exception e)
+        connect.connect();
+        Vector<Vector<String>> resultat;
+
+        resultat = connect.sendRequest(req.selectRequest("client"));
+        for (int i = 0; i < resultat.size(); i++)
         {
-            e.printStackTrace();
+            System.out.println("Résultat de la requête " + (i+1) + ": " + resultat.get(i));
         }
+        System.out.println(resultat.get(0).get(2));
+
+        resultat.clear();
+
+        resultat = connect.sendRequest(req.selectRequest("entreprise"));
+        for (int i = 0; i < resultat.size(); i++)
+        {
+            System.out.println("Résultat de la requête " + (i+1) + ": " + resultat.get(i));
+        }
+        System.out.println(resultat.get(0).get(2));
+
+        resultat.clear();
+
+        resultat = connect.sendRequest(req.selectRequest("facture"));
+        for (int i = 0; i < resultat.size(); i++)
+        {
+            System.out.println("Résultat de la requête " + (i+1) + ": " + resultat.get(i));
+        }
+        System.out.println(resultat.get(0).get(2));
+
+        resultat.clear();
+
+        resultat = connect.sendRequest(req.selectFactureByClient("facture", "1"));
+        for (int i = 0; i < resultat.size(); i++)
+        {
+            System.out.println("Résultat de la requête " + (i+1) + ": " + resultat.get(i));
+        }
+
+        resultat.clear();
+
+        resultat = connect.sendRequest(req.getClient("client", "1"));
+        System.out.println("Résultat de la requête pour le client 1: " + resultat.get(0));
+
+        connect.close();
     }
 }
