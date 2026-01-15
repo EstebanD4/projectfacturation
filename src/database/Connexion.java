@@ -7,8 +7,8 @@ public class Connexion
 {
     private static Connection instance;
     private static final String URL = "jdbc:mariadb://157.180.74.213:3306/Facturation";
-    private static final String USER = "root";
-    private static final String PASSWORD = "root";
+    private static final String USER = "";
+    private static final String PASSWORD = "";
     private Connection cn;
     private ResultSet result;
     public Connexion(){}
